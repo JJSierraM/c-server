@@ -1,14 +1,17 @@
 #include <netinet/in.h>
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <string.h>
 
 #define MAX_PENDING_CONNECTIONS 5
 #define PORT 9002
-#define SEND_FLAGS 0 
+#define SEND_FLAGS 0
+
+// void close_on_ctrl_c(int _);
 int main()
 {
     int socket_descriptor = socket(AF_INET, SOCK_STREAM, 0); // see refernce @ https://pubs.opengroup.org/onlinepubs/7908799/xns/socket.html
@@ -27,18 +30,20 @@ int main()
         printf("Error: could not listen\n");
         return -1;
     }
+    signal(SIGINT, close_on_ctrl_c);
 
     int client_socket;
-    int working = 1;
-    char message[]="Hello world!";
-    while (working) {
+    char message[] = "Hello world!";
+    for (;;) {
         // accept() blocks the caller until a connection is present
         // hence why this infinite loop works
         if ((client_socket = accept(socket_descriptor, NULL, NULL)) == -1) {
             printf("Error: some error accepting client socket\n"); // to do, look at errno
             return -1;
         }
-        if (strcmp(message))
+        if (0) { // to do: exit on possible client response.
+            break;
+        }
         send(client_socket, message, sizeof(message), SEND_FLAGS);
         // https://man7.org/linux/man-pages/man2/send.2.html
     }
@@ -46,5 +51,13 @@ int main()
     char bye_msg[] = "Closing server.\nBye ;)";
     send(client_socket, bye_msg, sizeof(bye_msg), SEND_FLAGS);
     close(socket_descriptor);
+    printf("Exiting server\n");
     return 0;
 }
+
+/*
+void close_on_ctrl_c(int _)
+{
+    goto exit;
+}
+*/
