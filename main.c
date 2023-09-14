@@ -4,6 +4,7 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
+#include <string.h>
 
 #define MAX_PENDING_CONNECTIONS 5
 #define PORT 9002
@@ -28,16 +29,22 @@ int main()
     }
 
     int client_socket;
+    int working = 1;
     char message[]="Hello world!";
-    for (;;) {
-        ;
+    while (working) {
         // accept() blocks the caller until a connection is present
         // hence why this infinite loop works
         if ((client_socket = accept(socket_descriptor, NULL, NULL)) == -1) {
             printf("Error: some error accepting client socket\n"); // to do, look at errno
             return -1;
         }
+        if (strcmp(message))
         send(client_socket, message, sizeof(message), SEND_FLAGS);
         // https://man7.org/linux/man-pages/man2/send.2.html
     }
+
+    char bye_msg[] = "Closing server.\nBye ;)";
+    send(client_socket, bye_msg, sizeof(bye_msg), SEND_FLAGS);
+    close(socket_descriptor);
+    return 0;
 }
