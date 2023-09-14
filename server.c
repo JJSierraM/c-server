@@ -33,9 +33,10 @@ int main()
     //signal(SIGINT, close_on_ctrl_c);
 
     int client_socket;
-    char message[] = "Hello from the server!";
+    char message[] = "Hello from the server!\0";
     char client_msg[256];
-    for (;;) {
+    int end = 0;
+    while(!end) {
         // accept() blocks the caller until a connection is present
         // hence why this infinite loop works
         if ((client_socket = accept(socket_descriptor, NULL, NULL)) == -1) {
@@ -43,16 +44,24 @@ int main()
             return -1;
         }
         send(client_socket, message, sizeof(message), SEND_FLAGS);
-        // https://man7.org/linux/man-pages/man2/send.2.html
 
-        bzero(client_msg, 256);
-        if (read(client_socket, client_msg, sizeof(char) * 10) == -1) {
-            perror("Error reading from client");
+        while (strncmp(client_msg, "bye", 3) != 0) {
+            bzero(client_msg, 256);
+            if (read(client_socket, client_msg, sizeof(char) * 256) == -1) {
+                perror("Error reading from client");
+            }
+            printf("Client says: %s\n", client_msg);
+            if (strncmp(client_msg, "bye", 3) == 0) { // exit on possible client response.
+                end = 1;
+            }
+            // to do: 
+            // - check if client has disconnected instead of saying "bye"
+            // - allow for many connections at the same time
+            // - allow user to input messages from stdin
         }
-        printf("Client says: %s\n", client_msg);
-        if (strncmp(client_msg, "bye", 3) == 0) { // exit on possible client response.
-            break;
-        }
+        // https://man7.org/linux/man-pages/man2/send.2.html
+        // to do: receive more than one message from client while being able to answer to more than one client at the same time
+        // see: https://www.geeksforgeeks.org/handling-multiple-clients-on-server-with-multithreading-using-socket-programming-in-c-cpp/ for reference
     }
 
     char bye_msg[] = "Closing server.\nBye ;)\n";

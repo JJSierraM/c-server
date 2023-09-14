@@ -23,12 +23,12 @@ int main()
     };
 
     connect(socket_descriptor, (struct sockaddr*)&server_parameters, sizeof(server_parameters));
-    char client_msg[] = "Hello world\0";
+
+    char client_msg[] = "Te has comido las empanadillas?\0";
+    write(socket_descriptor, client_msg, sizeof(client_msg));
+
     char server_msg[256];
-
     read(socket_descriptor, server_msg, sizeof(server_msg));
-    // write(socket_descriptor, client_msg, sizeof(client_msg));
-
     printf("Sever says: %s\n", server_msg);
 
     char bye[] = "bye\0";
