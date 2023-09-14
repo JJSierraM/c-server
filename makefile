@@ -12,5 +12,5 @@ server: server.c
 client: client.c
 	gcc client.c -o client
 
-format: main.c
-	$(FORMATTER) main.c
+format: client.c server.c
+	$(FORMATTER) server.c client.c

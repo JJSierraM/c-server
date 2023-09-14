@@ -46,14 +46,13 @@ int main()
         // https://man7.org/linux/man-pages/man2/send.2.html
 
         bzero(client_msg, 256);
-        if(read(client_socket, client_msg, sizeof(char) * 10) == -1){
-          perror("Error reading from client");
+        if (read(client_socket, client_msg, sizeof(char) * 10) == -1) {
+            perror("Error reading from client");
         }
-        printf("%s", client_msg);
+        printf("Client says: %s\n", client_msg);
         if (strncmp(client_msg, "bye", 3) == 0) { // exit on possible client response.
             break;
         }
-        
     }
 
     char bye_msg[] = "Closing server.\nBye ;)\n";
