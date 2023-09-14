@@ -30,10 +30,11 @@ int main()
         printf("Error: could not listen\n");
         return -1;
     }
-    signal(SIGINT, close_on_ctrl_c);
+    //signal(SIGINT, close_on_ctrl_c);
 
     int client_socket;
     char message[] = "Hello world!";
+    char client_msg[256];
     for (;;) {
         // accept() blocks the caller until a connection is present
         // hence why this infinite loop works
@@ -41,7 +42,9 @@ int main()
             printf("Error: some error accepting client socket\n"); // to do, look at errno
             return -1;
         }
-        if (0) { // to do: exit on possible client response.
+        bzero(client_msg, 256);
+        read(client_socket, client_msg, sizeof(client_msg));
+        if (strncmp(client_msg, "bye", 3) == 0) { // exit on possible client response.
             break;
         }
         send(client_socket, message, sizeof(message), SEND_FLAGS);
