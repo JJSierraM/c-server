@@ -33,7 +33,7 @@ int main()
     //signal(SIGINT, close_on_ctrl_c);
 
     int client_socket;
-    char message[] = "Hello world!";
+    char message[] = "Hello from the server!";
     char client_msg[256];
     for (;;) {
         // accept() blocks the caller until a connection is present
@@ -42,16 +42,21 @@ int main()
             printf("Error: some error accepting client socket\n"); // to do, look at errno
             return -1;
         }
+        send(client_socket, message, sizeof(message), SEND_FLAGS);
+        // https://man7.org/linux/man-pages/man2/send.2.html
+
         bzero(client_msg, 256);
-        read(client_socket, client_msg, sizeof(client_msg));
+        if(read(client_socket, client_msg, sizeof(char) * 10) == -1){
+          perror("Error reading from client");
+        }
+        printf("%s", client_msg);
         if (strncmp(client_msg, "bye", 3) == 0) { // exit on possible client response.
             break;
         }
-        send(client_socket, message, sizeof(message), SEND_FLAGS);
-        // https://man7.org/linux/man-pages/man2/send.2.html
+        
     }
 
-    char bye_msg[] = "Closing server.\nBye ;)";
+    char bye_msg[] = "Closing server.\nBye ;)\n";
     send(client_socket, bye_msg, sizeof(bye_msg), SEND_FLAGS);
     close(socket_descriptor);
     printf("Exiting server\n");
