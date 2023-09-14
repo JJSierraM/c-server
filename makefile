@@ -2,15 +2,18 @@
 STYLE_BLUEPRINT=webkit
 FORMATTER=clang-format -i -style=$(STYLE_BLUEPRINT)
 
+CLIENT=./src/client.c
+SERVER=./src/server.c
+
 all:
 	make server
 	make client
 
-server: server.c
-	gcc server.c -o server
+server: $(SERVER)
+	gcc $(SERVER) -o ./out/server
 
-client: client.c
-	gcc client.c -o client
+client: $(CLIENT)
+	gcc $(CLIENT) -o ./out/client
 
 format: client.c server.c
-	$(FORMATTER) server.c client.c
+	$(FORMATTER) $(SERVER) $(CLIENT)
