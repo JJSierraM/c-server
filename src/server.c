@@ -69,6 +69,7 @@ int main()
             // - [-] allow user to input server_msgs from stdin => skip for now.
             // - [ ] allow for many connections at the same time
         } 
+        close(client_socket);
         // https://man7.org/linux/man-pages/man2/send.2.html
         // to do: receive more than one message from client while being able to answer to more than one client at the same time
         // see: https://www.geeksforgeeks.org/handling-multiple-clients-on-server-with-multithreading-using-socket-programming-in-c-cpp/ for reference
