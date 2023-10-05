@@ -71,7 +71,8 @@ int main()
             // - [x] check if client has disconnected instead of saying "bye"
             // - [-] read full client response, not just first 256 chars. => would require a more complex protocol, skip for now.
             // - [-] allow user to input server_msgs from stdin => skip for now.
-            // - [ ] allow for many connections at the same time
+            // - [ ] Look how to use with curl
+            // - [ ] allow for many connections at the same time, probably using pthread
         } 
         close(client_socket);
         // https://man7.org/linux/man-pages/man2/send.2.html
