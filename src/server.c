@@ -33,7 +33,8 @@ int main()
     //signal(SIGINT, close_on_ctrl_c);
 
     int client_socket;
-    char server_msg[] = "Hello from the server!\0";
+    char server_msg[] = "Hello from the server!";
+    char server_bye_msg[] = "Closing server.\nBye ;)\n";
     char client_msg[256];
     ssize_t client_answer_bytes_read;
     int end_server_loop = 0;
@@ -59,6 +60,7 @@ int main()
             } else {
                 printf("Client says: %s\n", client_msg);
                 if (strncmp(client_msg, "bye", 3) == 0) { // exit on possible client response.
+                    send(client_socket, bye_msg, sizeof(bye_msg), SEND_FLAGS);
                     end_server_loop = 1;
                     end_client_loop = 1;
                 }
@@ -75,8 +77,6 @@ int main()
         // see: https://www.geeksforgeeks.org/handling-multiple-clients-on-server-with-multithreading-using-socket-programming-in-c-cpp/ for reference
     } 
 
-    char bye_msg[] = "Closing server.\nBye ;)\n";
-    send(client_socket, bye_msg, sizeof(bye_msg), SEND_FLAGS);
     close(socket_descriptor);
     printf("Exiting server\n");
     return 0;
