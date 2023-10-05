@@ -71,6 +71,8 @@ int main()
             // - [x] check if client has disconnected instead of saying "bye"
             // - [-] read full client response, not just first 256 chars. => would require a more complex protocol, skip for now.
             // - [-] allow user to input server_msgs from stdin => skip for now.
+            // - [ ] Handle exit signals in the server. Capture the signal and close the sockets if so
+            //   - Talk with Jorge. Global variable needed?
             // - [ ] Look how to use with curl
             // - [ ] allow for many connections at the same time, probably using pthread
         } 
