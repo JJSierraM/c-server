@@ -65,9 +65,9 @@ int main()
             }
             // to do: 
             // - [x] check if client has disconnected instead of saying "bye"
-            // - allow for many connections at the same time
-            // - read full client response, not just first 256 chars.
-            // - allow user to input server_msgs from stdin
+            // - [-] read full client response, not just first 256 chars. => would require a more complex protocol, skip for now.
+            // - [-] allow user to input server_msgs from stdin => skip for now.
+            // - [ ] allow for many connections at the same time
         } 
         // https://man7.org/linux/man-pages/man2/send.2.html
         // to do: receive more than one message from client while being able to answer to more than one client at the same time
