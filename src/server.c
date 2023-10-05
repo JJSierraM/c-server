@@ -62,7 +62,7 @@ int main()
             } else {
                 printf("Client says: %s\n", client_msg);
                 if (strncmp(client_msg, "bye", 3) == 0) { // exit on possible client response.
-                    send(client_socket, bye_msg, sizeof(bye_msg), SEND_FLAGS);
+                    send(client_socket, server_bye_msg, sizeof(server_bye_msg), SEND_FLAGS);
                     end_server_loop = 1;
                     end_client_loop = 1;
                 }
