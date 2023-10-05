@@ -32,13 +32,15 @@ int main()
     }
     //signal(SIGINT, close_on_ctrl_c);
 
-    int client_socket;
+    int end_server_loop = 0;
     char server_msg[] = "Hello from the server!";
     char server_bye_msg[] = "Closing server.\nBye ;)\n";
+    
+    int end_client_loop;
+    int client_socket;
     char client_msg[256];
     ssize_t client_answer_bytes_read;
-    int end_server_loop = 0;
-    int end_client_loop;
+
     while(!end_server_loop) {
         // accept() blocks the caller until a connection is present
         // hence why this infinite loop works
