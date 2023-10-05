@@ -33,36 +33,46 @@ int main()
     //signal(SIGINT, close_on_ctrl_c);
 
     int client_socket;
-    char message[] = "Hello from the server!\0";
+    char server_msg[] = "Hello from the server!\0";
     char client_msg[256];
-    int end = 0;
-    while(!end) {
+    ssize_t client_answer_bytes_read;
+    int end_server_loop = 0;
+    int end_client_loop;
+    while(!end_server_loop) {
         // accept() blocks the caller until a connection is present
         // hence why this infinite loop works
         if ((client_socket = accept(socket_descriptor, NULL, NULL)) == -1) {
             printf("Error: some error accepting client socket\n"); // to do, look at errno
             return -1;
         }
-        send(client_socket, message, sizeof(message), SEND_FLAGS);
-
-        while (strncmp(client_msg, "bye", 3) != 0) {
+        send(client_socket, server_msg, sizeof(server_msg), SEND_FLAGS);
+        end_client_loop = 0;
+        while (!end_client_loop) {
             bzero(client_msg, 256);
-            if (read(client_socket, client_msg, sizeof(char) * 256) == -1) {
+            client_answer_bytes_read = read(client_socket, client_msg, sizeof(char) * 256);
+            if (client_answer_bytes_read == -1) {
                 perror("Error reading from client");
-            }
-            printf("Client says: %s\n", client_msg);
-            if (strncmp(client_msg, "bye", 3) == 0) { // exit on possible client response.
-                end = 1;
+                end_client_loop = 1;
+            } else if(client_answer_bytes_read == 0){
+                printf("Client disconnected.\n");
+                end_client_loop = 1;
+            } else {
+                printf("Client says: %s\n", client_msg);
+                if (strncmp(client_msg, "bye", 3) == 0) { // exit on possible client response.
+                    end_server_loop = 1;
+                    end_client_loop = 1;
+                }
             }
             // to do: 
-            // - check if client has disconnected instead of saying "bye"
+            // - [x] check if client has disconnected instead of saying "bye"
             // - allow for many connections at the same time
-            // - allow user to input messages from stdin
-        }
+            // - read full client response, not just first 256 chars.
+            // - allow user to input server_msgs from stdin
+        } 
         // https://man7.org/linux/man-pages/man2/send.2.html
         // to do: receive more than one message from client while being able to answer to more than one client at the same time
         // see: https://www.geeksforgeeks.org/handling-multiple-clients-on-server-with-multithreading-using-socket-programming-in-c-cpp/ for reference
-    }
+    } 
 
     char bye_msg[] = "Closing server.\nBye ;)\n";
     send(client_socket, bye_msg, sizeof(bye_msg), SEND_FLAGS);
