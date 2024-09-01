@@ -11,7 +11,7 @@ int main() {
     hints.ai_flags = AI_PASSIVE;
 
     struct addrinfo *bind_address;
-    getaddrinfo(0, "8080", &hints, &bind_address);
+    getaddrinfo(0, "34197", &hints, &bind_address);
 
 
     printf("Creating socket...\n");
