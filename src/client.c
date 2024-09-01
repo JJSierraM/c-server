@@ -74,7 +74,7 @@ int main(int argc, char *argv[]) {
                 break;
             }
             if (VERBOSE) {
-                printf("Received (%d bytes): ", bytes_received, bytes_received, read);
+                printf("Received (%d bytes): ", bytes_received);
             }
             printf("%.*s", bytes_received, read);
         }
