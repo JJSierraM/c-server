@@ -46,8 +46,8 @@ int main() {
 
     printf("Waiting for connections...\n");
 
-
-    while(1) {
+    int open = 1;
+    while(open) {
         fd_set reads;
         reads = master;
         if (select(max_socket+1, &reads, 0, 0, 0) < 0) {
@@ -90,6 +90,13 @@ int main() {
                         CLOSESOCKET(i);
                         continue;
                     }
+                    char read_command[6];
+                    strncpy(read_command, read, 5);
+                    read_command[5] = 0;
+                    if (strcmp("close\0", read_command) == 0) {
+                        open = 0;
+                        break;
+                    }
 
                     SOCKET j;
                     for (j = 1; j <= max_socket; ++j) {
@@ -103,7 +110,7 @@ int main() {
                 }
             } //if FD_ISSET
         } //for i to max_socket
-    } //while(1)
+    } //while(open)
 
 
 
