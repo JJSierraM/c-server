@@ -26,6 +26,9 @@ exec:
 	gnome-terminal --tab --title="Client 2" -- ./out/client 127.0.0.1 34197
 	gnome-terminal --tab --title="Client 3" -- ./out/client 127.0.0.1 34197
 
+connect-to-jorge:
+	./out/client $$(cat ips.txt | grep jorge-ip | cut -d' ' -f2) $$(cat ips.txt | grep jorge-port | cut -d' ' -f2)
+
 # to-do: use tmux instead, e.g.
 #    tmux split-window -h
 #    tmux split-window -v
