@@ -1,7 +1,7 @@
 #include "common.h"
 #include <ctype.h>
 
-int main() {
+int main(int argc, char *argv[]) {
 
     printf("Configuring local address...\n");
     struct addrinfo hints;
@@ -11,8 +11,15 @@ int main() {
     hints.ai_flags = AI_PASSIVE;
 
     struct addrinfo *bind_address;
-    getaddrinfo(0, "34197", &hints, &bind_address);
 
+    if (argc < 2) {
+        getaddrinfo(0, "34197", &hints, &bind_address);
+    } else {
+        if (getaddrinfo(0, argv[1], &hints, &bind_address)) {
+            fprintf(stderr, "getaddrinfo() failed. (%d)\n", GETSOCKETERRNO());
+            return 1;
+        }
+    }
 
     printf("Creating socket...\n");
     SOCKET socket_listen;
