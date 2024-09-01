@@ -54,6 +54,7 @@ int main(int argc, char *argv[]) {
     printf("Waiting for connections...\n");
 
     int open = 1;
+    int n_clients = 0;
     while(open) {
         fd_set reads;
         reads = master;
@@ -89,10 +90,17 @@ int main(int argc, char *argv[]) {
                             NI_NUMERICHOST);
                     printf("New connection from %s\n", address_buffer);
 
+                    // Notify the new client about the number of other clients
+                    char init_msg[1024];
+                    n_clients++;
+                    sprintf(init_msg, "# clients = %d\n", n_clients);
+                    send(socket_client, init_msg, strlen(init_msg), 0);
+
                 } else {
                     char read[1024];
                     int bytes_received = recv(i, read, 1024, 0);
                     if (bytes_received < 1) {
+                        n_clients--;
                         FD_CLR(i, &master);
                         CLOSESOCKET(i);
                         continue;
