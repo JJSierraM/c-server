@@ -25,3 +25,18 @@ exec:
 	gnome-terminal --tab --title="Client 1" -- ./out/client 127.0.0.1 34197
 	gnome-terminal --tab --title="Client 2" -- ./out/client 127.0.0.1 34197
 	gnome-terminal --tab --title="Client 3" -- ./out/client 127.0.0.1 34197
+
+# to-do: use tmux instead, e.g.
+#    tmux split-window -h
+#    tmux split-window -v
+#
+#    # Select the first pane and run the first command
+#    tmux select-pane -t 0
+#    tmux send-keys "$COMMAND1" Enter
+#
+#    # Select the second pane and run the second command
+#    tmux select-pane -t 1
+#    tmux send-keys "$COMMAND2" Enter
+#
+#    tmux select-pane -t 2
+#    tmux send-keys "$COMMAND3" Enter
