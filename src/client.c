@@ -1,5 +1,6 @@
 
 #include "common.h"
+#define VERBOSE 0
 
 int main(int argc, char *argv[]) {
 
@@ -48,7 +49,7 @@ int main(int argc, char *argv[]) {
     freeaddrinfo(peer_address);
 
     printf("Connected.\n");
-    printf("To send data, enter text followed by enter.\n");
+    printf("To send data, enter text followed by enter.\n\n");
 
     while(1) {
 
@@ -72,16 +73,18 @@ int main(int argc, char *argv[]) {
                 printf("Connection closed by peer.\n");
                 break;
             }
-            printf("Received (%d bytes): %.*s",
-                    bytes_received, bytes_received, read);
+            if (VERBOSE) {
+                printf("Received (%d bytes): ", bytes_received, bytes_received, read);
+            }
+            printf("%.*s", bytes_received, read);
         }
 
         if(FD_ISSET(0, &reads)) {
             char read[4096];
             if (!fgets(read, 4096, stdin)) break;
-            printf("Sending: %s", read);
+            if (VERBOSE) { printf("Sending: %s", read); }
             int bytes_sent = send(socket_peer, read, strlen(read), 0);
-            printf("Sent %d bytes.\n", bytes_sent);
+            if (VERBOSE) { printf("Sent %d bytes.\n", bytes_sent); }
         }
     } //end while(1)
 
