@@ -1,22 +1,5 @@
 #include "common.h"
 #include <ctype.h>
-#include <time.h>
-
-#define PING_INTERVAL 5
-#define TIMEOUT_INTERVAL 12
-#define MAX_CLIENTS 1024
-
-typedef struct {
-    SOCKET socket;
-    time_t last_ping_time;
-    time_t last_pong_time;
-} Client_ping_pong;
-
-Client_ping_pong clients[MAX_CLIENTS];
-int n_clients = 0;
-
-void send_ping();
-void check_for_timeouts();
 
 int main(int argc, char *argv[]) {
 
@@ -71,6 +54,7 @@ int main(int argc, char *argv[]) {
     printf("Waiting for connections...\n");
 
     int open = 1;
+    int n_clients = 0;
     while(open) {
         fd_set reads;
         reads = master;
@@ -121,16 +105,10 @@ int main(int argc, char *argv[]) {
                         CLOSESOCKET(i);
                         continue;
                     }
-
-                    if (strcmp(read_buffer, "PONG") == 0) {
-                        // Find corresponding client and update last_pong_time
-                        time(&clients[i].last_pong_time);
-                    }
-
                     char read_command[6];
                     strncpy(read_command, read, 5);
                     read_command[5] = 0;
-                    if (strcmp("close", read_command) == 0) {
+                    if (strcmp("close\0", read_command) == 0) {
                         open = 0;
                         break;
                     }
@@ -147,41 +125,15 @@ int main(int argc, char *argv[]) {
                 }
             } //if FD_ISSET
         } //for i to max_socket
-        //
-        send_ping();
-        check_for_timeouts();
     } //while(open)
+
+
 
     printf("Closing listening socket...\n");
     CLOSESOCKET(socket_listen);
 
+
     printf("Finished.\n");
 
     return 0;
-}
-
-void send_ping_messages(){
-    time_t now;
-    time(&now);
-    for(int i=0; i<n_clients; ++i){
-        if(difftime(now, clients[i].last_ping_time) >= PING_INTERVAL) {
-            send(clients[i].socket, "PING", strlen("PING"), 0);
-            clients[i].last_ping_time = now;
-        }
-    }
-}
-
-
-void check_for_timeouts() {
-    time_t now;
-    time(&now);
-
-    for(int i = 0; i < client_count; ++i) {
-        if (difftime(now, clients[i].last_pong_time) >= TIMEOUT_INTERVAL) {
-            // Client has not responded in time, close the socket and remove from client list
-            CLOSESOCKET(clients[i].socket);
-            // Code to remove client from list and decrement client_count
-            // Shift clients in the array, handle client_count, etc.
-        }
-    }
 }
