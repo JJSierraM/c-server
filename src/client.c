@@ -1,6 +1,7 @@
-
 #include "common.h"
-#define VERBOSE 0
+#include <time.h>
+
+#define VERBOSE 1
 
 int main(int argc, char *argv[]) {
 
